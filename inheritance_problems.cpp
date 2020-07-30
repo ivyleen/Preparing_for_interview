@@ -20,7 +20,11 @@ public:
         Derived () { cout << "Derived default constructor called" << endl; }
         ~Derived () { cout << "Derived destructor called." << endl; }
 
-        void func () { cout << "Derived function called." << endl; }
+	// override keyword check if we really have such function signature
+	// in the base class that we want to override
+	// in the case of int func() we will have a compile error because 
+	// the right function signature in the base class is void func()
+        int func () override { cout << "Derived function called." << endl; }
 
 };
 
@@ -40,9 +44,10 @@ int main ()
 	delete b_ptr; // works fine
 	b_ptr = nullptr;
 
-	delete d_ptr; // doesn't actually calls for the Derived destructor
+	delete d_ptr; // this needs to call the Derived destructor
        		      // that's why we need virtual keyword in front of the base destructor
 	d_ptr = nullptr;
 	        
+	// end of program
         return 0;
 }     
