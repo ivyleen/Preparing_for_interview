@@ -14,7 +14,8 @@ public:
 };
 
 
-class Derived : public Base
+// we need to inherit virtually Base class so we don't have a diamond problem
+class Derived : virtual public Base
 {
 public: 
         Derived () { cout << "Derived default constructor called" << endl; }
@@ -28,8 +29,8 @@ public:
 
 };
 
-
-class Derived_Two : public Base
+// we need to inherit virtually Base class so we don't have a diamond problem
+class Derived_Two : virtual public Base
 {
 public:
 	Derived_Two () {cout << "Derived_Two default constructor called." << endl; }
