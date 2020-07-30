@@ -26,7 +26,17 @@ public:
 
 int main ()
 {       
+	// creation
+	Base * b_ptr = new Base();
+	Base * d_ptr = new Derived();
 
-        
+	// destruction
+	delete b_ptr; // works fine
+	b_ptr = nullptr;
+
+	delete d_ptr; // doesn't actually calles for the Derived destructor
+       		      // that's why we need virtual keyword infront of the destructor
+	d_ptr = nullptr;
+	        
         return 0;
 }     
