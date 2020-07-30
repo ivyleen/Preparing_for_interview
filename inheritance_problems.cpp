@@ -29,6 +29,16 @@ public:
 };
 
 
+class Derived_Two : public Base
+{
+public:
+	Derived_Two () {cout << "Derived_Two default constructor called." << endl; }
+	~Derived_Two () { cout << "Derived_Two destructor called." << endl; }
+
+	void func () override { cout << "Derived_Two function called." << endl; }
+};
+
+
 // one use of keyword final is prevention of any deriving from this class
 class SecondLineDerived final : public Derived 
 {
@@ -46,6 +56,7 @@ public:
 
 
 // compile error: we can't derive from a class marked as final
+/*
 class ThirdLineDerived : public SecondLineDerived
 {
 public:
@@ -58,6 +69,28 @@ public:
 	// was marked as final 
 	void func() override { cout << "ThirdLineDerived function called." << endl; }
 };
+*/
+
+
+// the diamond problem comes from not using virtual keyword and occurs when a class
+// derives from two other classes with a common base class
+// the actual problem in this case without the virtual keyword class Diamond will 
+// have two copies of the Base class which will cause ambiguities
+// NOTE: when we use virtual keyword the default constructor of the Base class 
+// is called by default even if the parent classes explicitly call the parameterized
+// constructor
+class Diamond : public Derived, Derived_Two
+{
+public: 
+        Diamond () { cout << "Diamond default constructor called" << endl; }
+        ~Diamond () { cout << "Diamond destructor called." << endl; }
+
+	// override keyword checks if we really have such function signature
+	// in the base class that we want to override
+	// in the case of int func() we will have a compile error because 
+	// the right function signature in the base class is void func()
+        void func () override { cout << "Diamond function called." << endl; }
+};
 
 int main ()
 {       
@@ -65,6 +98,9 @@ int main ()
 	Base * b_ptr = new Base();
 	Base * d_ptr = new Derived();
 	Base * s_ptr = new SecondLineDerived();
+	Base * d2_ptr = new Derived_Two();
+	Diamond * dmnd_ptr = new Diamond();
+	cout << endl;
 
 	// calling a function
 	b_ptr->func(); // works fine
@@ -72,6 +108,10 @@ int main ()
 		       // properly working run time virtual polymorphism 
 		       // or in other words we need to mark the Base function as virtual
 	s_ptr->func();
+	d2_ptr->func();
+	dmnd_ptr->func();
+
+	cout << endl;
 
 	// destruction
 	delete b_ptr; // works fine
@@ -83,7 +123,13 @@ int main ()
 
 	delete s_ptr;
 	s_ptr = nullptr;
+
+	delete d2_ptr;
+	d2_ptr = nullptr;
 	        
+	delete dmnd_ptr;
+	dmnd_ptr = nullptr;
+
 	// end of program
         return 0;
 }     
